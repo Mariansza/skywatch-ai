@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skywatch-ai"
+version = "0.1.0"
+description = "Détection et tracking d'objets sur imagerie aérienne"
+requires-python = ">=3.11"
+dependencies = [
+    "torch>=2.2",
+    "torchvision>=0.17",
+    "ultralytics>=8.2",
+    "opencv-python-headless>=4.9",
+    "onnxruntime>=1.17",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "pyyaml>=6.0",
+    "numpy>=1.26",
+    "supervision>=0.19",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1",
+    "ruff>=0.4",
+    "mypy>=1.9",
+    "pre-commit>=3.7",
+]
+
+# --- Ruff -----------------------------------------------------------------
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "F",     # pyflakes — erreurs logiques (imports inutilisés, variables non définies)
+    "E",     # pycodestyle errors — style PEP 8
+    "W",     # pycodestyle warnings
+    "I",     # isort — tri des imports
+    "N",     # pep8-naming — conventions de nommage
+    "UP",    # pyupgrade — modernise la syntaxe vers Python 3.11+
+    "B",     # flake8-bugbear — patterns suspects / bugs courants
+    "SIM",   # flake8-simplify — simplifications de code
+    "TCH",   # flake8-type-checking — imports uniquement pour le typage dans TYPE_CHECKING
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+# --- Pytest ----------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+# --- Mypy ------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
