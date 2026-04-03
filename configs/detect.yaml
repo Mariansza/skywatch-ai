@@ -1,0 +1,23 @@
+model:
+  weights: "yolov8n.pt"
+  task: "detect"
+  device: "auto"
+
+inference:
+  conf_threshold: 0.25
+  iou_threshold: 0.45
+  max_detections: 300
+  image_size: 640
+  classes: null
+
+visualization:
+  box_thickness: 2
+  text_scale: 0.5
+  text_thickness: 1
+  show_confidence: true
+  show_labels: true
+
+output:
+  save_images: true
+  save_labels: false
+  output_dir: "runs/detect"

@@ -29,6 +29,10 @@ dev = [
 ]
 
 # --- Ruff -----------------------------------------------------------------
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+# --- Ruff -----------------------------------------------------------------
 [tool.ruff]
 line-length = 88
 target-version = "py311"
@@ -53,6 +57,7 @@ known-first-party = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = ["slow: tests that require downloading model weights"]
 
 # --- Mypy ------------------------------------------------------------------
 [tool.mypy]
