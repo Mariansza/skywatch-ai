@@ -1,0 +1,45 @@
+model:
+  weights: "yolov8n.pt"
+  task: "detect"
+  device: "auto"
+
+inference:
+  conf_threshold: 0.25
+  iou_threshold: 0.45
+  max_detections: 300
+  image_size: 640
+  classes: null
+
+tracking:
+  # Minimum confidence to start a new track. Detections below this
+  # are still matched to existing tracks, but won't create new ones.
+  track_activation_threshold: 0.25
+
+  # How many frames to keep a "lost" track before deleting it.
+  # Higher = more tolerant of temporary occlusions (object behind obstacle).
+  lost_track_buffer: 30
+
+  # IoU threshold for matching a detection to an existing track.
+  # Higher = stricter matching (less ID switches, but more lost tracks).
+  minimum_matching_threshold: 0.8
+
+  # Video frame rate — used internally by ByteTrack for age calculations.
+  frame_rate: 30
+
+  # How many consecutive frames a detection must appear before
+  # being promoted to a confirmed track.
+  minimum_consecutive_frames: 1
+
+visualization:
+  box_thickness: 2
+  text_scale: 0.5
+  text_thickness: 1
+  show_confidence: true
+  show_labels: true
+  show_track_ids: true
+  show_traces: false
+  trace_length: 30
+
+output:
+  save_video: true
+  output_dir: "runs/track"
