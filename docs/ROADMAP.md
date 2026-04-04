@@ -23,24 +23,41 @@ Avec : métriques d'évaluation (mAP, MOTA), benchmarks de latence, et ADRs docu
 
 ---
 
-## Itération 2 : Tracking multi-objets (PROCHAINE)
+## Itération 2 : Tracking multi-objets — TERMINÉE
 
 **Objectif :** Suivre les objets détectés à travers les frames d'une vidéo avec ByteTrack.
 
-**Modules :**
-- `src/tracking/byte_track.py` — Wrapper ByteTrack
-- `src/tracking/video_pipeline.py` — Pipeline vidéo (lecture, détection, tracking, visualisation)
-- `configs/track.yaml` — Paramètres de tracking
-- `scripts/track.py` — CLI vidéo
-- Extension de `schema.py` — `TrackedDetection` avec `tracker_id`
+**Livré :**
+- `src/tracking/schema.py` — Dataclasses `TrackedDetection`, `TrackingResult`, `VideoInfo`, `PipelineStats`
+- `src/tracking/tracker.py` — Wrapper ByteTrack (update, reset, from_config)
+- `src/tracking/video_io.py` — Lecture/écriture vidéo avec conversion BGR↔RGB
+- `src/tracking/video_pipeline.py` — Pipeline detect → track → annotate → save
+- `src/utils/visualization.py` — Ajout `annotate_tracks()` avec IDs et trajectoires
+- `configs/track.yaml` — Configuration tracking avec paramètres ByteTrack documentés
+- `scripts/track.py` — CLI : `python scripts/track.py --source video.mp4`
+- 37 nouveaux tests (52 total, ruff + pytest passants)
 
 ---
 
-## Itération 3 : Entraînement sur données aériennes
+## Itération 3 : Export et optimisation edge (PROCHAINE)
+
+**Objectif :** Export ONNX + inférence ONNX Runtime pour déploiement edge.
+
+**Modules :**
+
+- `src/models/export.py` — Export PyTorch → ONNX (quantization INT8/FP16)
+- Backend ONNX dans `Detector` (même interface, backend différent)
+- `configs/export.yaml` + `scripts/export.py`
+- Benchmarks PyTorch vs ONNX
+
+---
+
+## Itération 4 : Entraînement sur données aériennes
 
 **Objectif :** Fine-tuner YOLOv8 sur DOTA ou VisDrone.
 
 **Modules :**
+
 - `src/data/dataset.py` — Chargement datasets aériens
 - `src/data/augmentations.py` — Augmentations spécifiques aérien
 - `src/data/convert.py` — Conversion DOTA → YOLO
@@ -49,23 +66,12 @@ Avec : métriques d'évaluation (mAP, MOTA), benchmarks de latence, et ADRs docu
 
 ---
 
-## Itération 4 : Export et optimisation edge
-
-**Objectif :** Export ONNX + inférence ONNX Runtime pour déploiement edge.
-
-**Modules :**
-- `src/models/export.py` — Export PyTorch → ONNX (quantization INT8/FP16)
-- Backend ONNX dans `Detector` (même interface, backend différent)
-- `configs/export.yaml` + `scripts/export.py`
-- Benchmarks PyTorch vs ONNX
-
----
-
 ## Itération 5 : Évaluation et métriques
 
 **Objectif :** Mesurer les performances objectivement.
 
 **Modules :**
+
 - `src/eval/metrics.py` — mAP, MOTA/IDF1, latence
 - `src/eval/benchmark.py` — Benchmarks automatisés
 - `configs/eval.yaml` + `scripts/evaluate.py` + `scripts/benchmark.py`
@@ -77,6 +83,7 @@ Avec : métriques d'évaluation (mAP, MOTA), benchmarks de latence, et ADRs docu
 **Objectif :** API REST d'inférence.
 
 **Modules :**
+
 - `src/api/routes.py` — POST /detect, POST /track, GET /health
 - `src/api/schemas.py` — Schemas Pydantic
 - `src/api/app.py` — Application FastAPI
@@ -88,6 +95,7 @@ Avec : métriques d'évaluation (mAP, MOTA), benchmarks de latence, et ADRs docu
 **Objectif :** Dashboard web.
 
 **Modules :**
+
 - `frontend/` — React + TypeScript + Vite + Tailwind
 - Upload images/vidéos, visualisation détections, playback tracking, métriques
 
@@ -98,9 +106,9 @@ Avec : métriques d'évaluation (mAP, MOTA), benchmarks de latence, et ADRs docu
 ```
 Itération 1 (Détection) ✅
     ↓
-Itération 2 (Tracking)      Itération 3 (Entraînement)
-    ↓                              ↓
-    ↓                        Itération 4 (Export ONNX)
+Itération 2 (Tracking) ✅
+    ↓
+Itération 3 (Export ONNX)    Itération 4 (Entraînement)
     ↓                              ↓
     └──────────┬───────────────────┘
                ↓
@@ -111,4 +119,4 @@ Itération 2 (Tracking)      Itération 3 (Entraînement)
          Itération 7 (Frontend)
 ```
 
-Les itérations 2 et 3 sont partiellement parallélisables.
+Les itérations 3 et 4 sont partiellement parallélisables.

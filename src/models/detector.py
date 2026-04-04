@@ -138,3 +138,26 @@ class Detector:
         with path.open() as f:
             config = yaml.safe_load(f)
         return cls(config)
+
+
+def create_detector(config: dict[str, Any]) -> Detector:
+    """Factory that selects the right backend based on weights file extension.
+
+    - ``.pt`` → PyTorch backend (Detector, requires ultralytics)
+    - ``.onnx`` → ONNX Runtime backend (OnnxDetector, lightweight)
+
+    This lets you switch backends by changing one line in the config:
+    ``weights: "yolov8n.onnx"`` instead of ``weights: "yolov8n.pt"``
+
+    Args:
+        config: Dictionary with ``model`` and ``inference`` sections.
+
+    Returns:
+        A Detector or OnnxDetector instance.
+    """
+    weights = config["model"]["weights"]
+    if weights.endswith(".onnx"):
+        from src.models.onnx_detector import OnnxDetector
+
+        return OnnxDetector(config)  # type: ignore[return-value]
+    return Detector(config)

@@ -1,0 +1,28 @@
+export:
+  # Source PyTorch model
+  weights: "yolov8n.pt"
+
+  # Output format (only onnx supported for now)
+  format: "onnx"
+
+  # Simplify the ONNX graph — removes redundant operations,
+  # resulting in a smaller and faster model. Almost always wanted.
+  simplify: true
+
+  # FP16 half-precision — halves the model size and speeds up
+  # inference on GPUs that support it. Not compatible with CPU-only.
+  half: false
+
+  # INT8 quantization — even smaller and faster, but may reduce
+  # accuracy slightly. Requires calibration data for best results.
+  int8: false
+
+  # ONNX opset version — higher = more operators supported.
+  # 17 is well-supported across runtimes.
+  opset: 17
+
+  # Input image size the model expects.
+  image_size: 640
+
+  # Where to save the exported model.
+  output_dir: "runs/export"
